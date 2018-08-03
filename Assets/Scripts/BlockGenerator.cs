@@ -6,19 +6,33 @@ public class BlockGenerator : MonoBehaviour {
 
 	public int maxGo;
 	public int maxNoGo;
+	public int maxBlocks;
 
-	private List<bool> generatedBlock;
+	public List<bool> generatedBlock;
+
+	public List<bool>[] allBlocks;
+
+	void Awake(){
+		allBlocks = new List<bool>[maxBlocks];
+	}
 
 	void Start(){
 
-		GenerateBlock ();
-
-		for (int i = 0; i < generatedBlock.Count; i++){
+		/*for (int i = 0; i < generatedBlock.Count; i++){
 			print (generatedBlock [i]);
+		}*/
+
+		for (int i = 0; i < maxBlocks; i++){
+			GenerateSingleBlock ();
+			allBlocks [i] = generatedBlock;
+			for (int j = 0; j < generatedBlock.Count; j++){
+				print (generatedBlock [j]);
+			}
+			print ("===============================");
 		}
 	}
 
-	public void GenerateBlock(){
+	public void GenerateSingleBlock(){
 
 		List<bool> trials = new List<bool>(); //List where all trials are stored.
 
@@ -43,8 +57,8 @@ public class BlockGenerator : MonoBehaviour {
 	IEnumerator CheckBlockValidity(List<bool> block){
 
 		if(block[0] == false || block[block.Count - 1] == false){ //Check if first or last trial is false.
-			print ("false detected at start or end of block, recreating");
-			GenerateBlock ();
+			//print ("false detected at start or end of block, recreating");
+			GenerateSingleBlock ();
 			yield break;
 		}
 
@@ -52,13 +66,13 @@ public class BlockGenerator : MonoBehaviour {
 			if (i == 0 || i == block.Count - 1) {	//skip first and last values of list
 				continue;
 			} else if (block [i] == false && (block [i + 1] == false)) { //Check if two nogos are together.
-				print ("two falses together, recreating block");
-				GenerateBlock ();
+				//print ("two falses together, recreating block");
+				GenerateSingleBlock ();
 				yield break;
 			}
 		}
 			
-		print ("block generated successfully");
+		//print ("block generated successfully");
 		generatedBlock = block;
 
 		yield return null;
