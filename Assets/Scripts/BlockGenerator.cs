@@ -21,10 +21,10 @@ public class BlockGenerator : MonoBehaviour {
 			allBlocks [i] = generatedBlock;
 
 
-			for (int j = 0; j < generatedBlock.Count; j++){ //Print all values of block, just to see if block generation works ok.
+			/*for (int j = 0; j < generatedBlock.Count; j++){ //Print all values of block, just to see if block generation works ok.
 				print (generatedBlock [j]);
 			}
-			print ("===============================");
+			print ("===============================");*/
 		}
 	}
 

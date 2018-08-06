@@ -22,10 +22,10 @@ public class SART_Test : MonoBehaviour {
 
 		currentBlock = 0;
 		currentTrial = 0;
-
 	}
 
 	void Start(){
+
 		StartCoroutine(WaitForNextStimulus());
 	}
 
@@ -54,8 +54,11 @@ public class SART_Test : MonoBehaviour {
 	}
 
 	bool SelectTrial(){
+
 		List<bool> block = blockGenerator.allBlocks [currentBlock];
 		bool trial = block [currentTrial];
+
+		print ("block: " + currentBlock + " trial: " + currentTrial);
 
 		if (currentTrial < block.Count && currentBlock < blockGenerator.allBlocks.Length){ //TODO possible error here
 			currentTrial++;
@@ -66,8 +69,9 @@ public class SART_Test : MonoBehaviour {
 			currentBlock++;
 		}
 
-		if(currentTrial >= block.Count && currentBlock >= blockGenerator.allBlocks.Length){
+		if(currentTrial >= block.Count && currentBlock >= blockGenerator.allBlocks.Length - 1){
 			allTrialsDone = true;
+			print ("done!");
 		}
 
 		return trial;
