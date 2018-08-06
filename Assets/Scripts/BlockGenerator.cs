@@ -8,27 +8,23 @@ public class BlockGenerator : MonoBehaviour {
 	public int maxNoGo;
 	public int maxBlocks;
 
+	[HideInInspector]
 	public List<bool> generatedBlock;
 
 	public List<bool>[] allBlocks;
 
 	void Awake(){
 		allBlocks = new List<bool>[maxBlocks];
-	}
-
-	void Start(){
-
-		/*for (int i = 0; i < generatedBlock.Count; i++){
-			print (generatedBlock [i]);
-		}*/
 
 		for (int i = 0; i < maxBlocks; i++){
 			GenerateSingleBlock ();
 			allBlocks [i] = generatedBlock;
-			for (int j = 0; j < generatedBlock.Count; j++){
+
+
+			/*for (int j = 0; j < generatedBlock.Count; j++){ //Print all values of block, just to see if block generation works ok.
 				print (generatedBlock [j]);
 			}
-			print ("===============================");
+			print ("===============================");*/
 		}
 	}
 
@@ -36,7 +32,7 @@ public class BlockGenerator : MonoBehaviour {
 
 		List<bool> trials = new List<bool>(); //List where all trials are stored.
 
-		for (int i = 0; i < maxGo; i++){	//generate all 'trues' and add to list
+		for (int i = 0; i < maxGo; i++){	//generate all 'trues' and add to list.
 			trials.Add (true);
 		}
 
@@ -71,8 +67,6 @@ public class BlockGenerator : MonoBehaviour {
 				yield break;
 			}
 		}
-			
-		//print ("block generated successfully");
 		generatedBlock = block;
 
 		yield return null;
