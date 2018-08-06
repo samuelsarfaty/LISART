@@ -9,7 +9,7 @@ public class CSV_Maker : MonoBehaviour {
 
 	private static CSV_Maker maker;
 	private List<string[]> dataCollected = new List<string[]> ();
-	private string path = "E:/Samuel/Goldsmiths/Research projects/Listen-In SART/Assets/Resources/SART_Data.csv";
+	private string path = "E:/Samuel/Goldsmiths/Research projects/Listen-In SART/Assets/Resources/SART_Data.csv"; //Choose path to output data
 
 	void Start(){
 		maker = this;
