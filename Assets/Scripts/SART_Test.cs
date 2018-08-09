@@ -33,16 +33,7 @@ public class SART_Test : MonoBehaviour {
 	}
 
 	void Update(){
-		if(showingTrial == true && Input.GetKeyDown("space")){
-			StopCoroutine (lastRoutine);
-			StartCoroutine (WaitForNextStimulus ());
-			if(allTrialsDone){
-				MainMenuManager.testCompleted = true;
-				SceneManager.LoadScene ("SART_MainMenu");
-			}
-		}
-
-		/*if(showingTrial == true && HitButton.buttonPressed == true){
+		/*if(showingTrial == true && Input.GetKeyDown("space")){
 			StopCoroutine (lastRoutine);
 			StartCoroutine (WaitForNextStimulus ());
 			if(allTrialsDone){
@@ -50,6 +41,20 @@ public class SART_Test : MonoBehaviour {
 				SceneManager.LoadScene ("SART_MainMenu");
 			}
 		}*/
+
+		if(showingTrial == true){
+			if(HitButton.buttonPressed == true){
+				HitButton.buttonPressed = false;
+				StopCoroutine (lastRoutine);
+				StartCoroutine (WaitForNextStimulus ());
+
+				if(allTrialsDone){
+					MainMenuManager.testCompleted = true;
+					SceneManager.LoadScene ("SART_MainMenu");
+				}
+			}
+
+		}
 	}
 
 	IEnumerator StartGame(){

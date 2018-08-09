@@ -5,13 +5,15 @@ public class HitButton : MonoBehaviour {
 
 	public static bool buttonPressed = false;
 
-	public void Press(){
-		buttonPressed = true;
-		print ("button pressed =" + buttonPressed);
+
+	void Update(){
+		/*if(buttonPressed == true){
+			buttonPressed = false;
+		}*/
 	}
 
-	public void Release(){
-		buttonPressed = false;
+	public void Press(){
+		buttonPressed = true;
 		print ("button pressed =" + buttonPressed);
 	}
 }
