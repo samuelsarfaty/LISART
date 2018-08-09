@@ -18,28 +18,30 @@ public class CSV_Maker : MonoBehaviour {
 
 	public List<string[]> CreateHeader(){
 		List<string[]> rowData = new List<string[]> ();
-		string[] temp = new string[6];
+		string[] temp = new string[7];
 
 		temp [0] = "TrialNumber";
 		temp [1] = "BlockNumber";
-		temp [2] = "isGo?";
-		temp [3] = "PresentationTime";
-		temp [4] = "ReactionTime";
-		temp [5] = "Hit";
+		temp [2] = "Type";
+		temp [3] = "isGo?";
+		temp [4] = "PresentationTime";
+		temp [5] = "ReactionTime";
+		temp [6] = "Hit";
 
 		rowData.Add (temp);
 		return rowData;
 	}
 
-	public static void Write(int trial, int block, bool isGo, float presentationTime, float reactionTime, bool hit){
-		string[] rowDataTemp = new string[6];
+	public static void Write(int trial, int block, string type, bool isGo, float presentationTime, float reactionTime, bool hit){
+		string[] rowDataTemp = new string[7];
 
 		rowDataTemp [0] = trial.ToString ();
 		rowDataTemp [1] = block.ToString ();
-		rowDataTemp [2] = isGo.ToString ();
-		rowDataTemp [3] = presentationTime.ToString ();
-		rowDataTemp [4] = reactionTime.ToString ();
-		rowDataTemp [5] = hit.ToString ();
+		rowDataTemp [2] = type;
+		rowDataTemp [3] = isGo.ToString ();
+		rowDataTemp [4] = presentationTime.ToString ();
+		rowDataTemp [5] = reactionTime.ToString ();
+		rowDataTemp [6] = hit.ToString ();
 
 		maker.dataCollected.Add (rowDataTemp);
 	}

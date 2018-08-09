@@ -12,13 +12,13 @@ public class DataGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		/*CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
 		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
 		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
 		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
 		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
 		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
-		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
-		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);
+		CSV_Maker.Write (trial, block, isGo, presTime, reactionTime, hit);*/
 
 	
 	}

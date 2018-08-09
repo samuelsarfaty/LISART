@@ -13,12 +13,9 @@ public class SART_Test : MonoBehaviour {
 	public float waitTime;
 
 	private BlockGenerator blockGenerator;
-
-
 	private bool allTrialsDone;
 	private int currentBlock;
 	private int currentTrial;
-
 	private bool showingTrial = false;
 	private Coroutine lastRoutine;
 
@@ -44,6 +41,15 @@ public class SART_Test : MonoBehaviour {
 				SceneManager.LoadScene ("SART_MainMenu");
 			}
 		}
+
+		/*if(showingTrial == true && HitButton.buttonPressed == true){
+			StopCoroutine (lastRoutine);
+			StartCoroutine (WaitForNextStimulus ());
+			if(allTrialsDone){
+				MainMenuManager.testCompleted = true;
+				SceneManager.LoadScene ("SART_MainMenu");
+			}
+		}*/
 	}
 
 	IEnumerator StartGame(){
