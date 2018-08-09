@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SART_Test : MonoBehaviour {
 
 	public GameObject door;
 	public GameObject go;
 	public GameObject noGo;
+	public Text counter;
 	public float waitTime;
 
 	private BlockGenerator blockGenerator;
@@ -26,7 +28,19 @@ public class SART_Test : MonoBehaviour {
 
 	void Start(){
 
-		StartCoroutine(WaitForNextStimulus());
+		Reset ();
+		StartCoroutine(StartGame());
+	}
+
+	IEnumerator StartGame(){
+		for (int i = 3; i > 0; i--){
+			counter.text = i.ToString ();
+			yield return new WaitForSeconds (1);
+		}
+
+		counter.gameObject.SetActive (false);
+
+		StartCoroutine (WaitForNextStimulus ());
 	}
 
 	IEnumerator ShowTrial(bool trial){
