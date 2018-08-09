@@ -40,6 +40,7 @@ public class SART_Test : MonoBehaviour {
 		yield return new WaitForSeconds (waitTime);
 
 		if(allTrialsDone){
+			MainMenuManager.testCompleted = true;
 			SceneManager.LoadScene ("SART_MainMenu");
 		} else {
 			StartCoroutine (WaitForNextStimulus ());
