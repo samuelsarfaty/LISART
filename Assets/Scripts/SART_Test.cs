@@ -19,6 +19,9 @@ public class SART_Test : MonoBehaviour {
 	private int currentBlock;
 	private int currentTrial;
 
+	private bool showingTrial = false;
+	private Coroutine lastRoutine;
+
 	void Awake(){
 		blockGenerator = GameObject.FindObjectOfType<BlockGenerator> ();
 
@@ -29,7 +32,18 @@ public class SART_Test : MonoBehaviour {
 	void Start(){
 
 		Reset ();
-		StartCoroutine(StartGame());
+		lastRoutine = StartCoroutine(StartGame());
+	}
+
+	void Update(){
+		if(showingTrial == true && Input.GetKeyDown("space")){
+			StopCoroutine (lastRoutine);
+			StartCoroutine (WaitForNextStimulus ());
+			if(allTrialsDone){
+				MainMenuManager.testCompleted = true;
+				SceneManager.LoadScene ("SART_MainMenu");
+			}
+		}
 	}
 
 	IEnumerator StartGame(){
@@ -45,6 +59,8 @@ public class SART_Test : MonoBehaviour {
 
 	IEnumerator ShowTrial(bool trial){
 
+		showingTrial = true;
+
 		if(trial == true){
 			ShowGo ();
 		} else if (trial == false){
@@ -57,6 +73,7 @@ public class SART_Test : MonoBehaviour {
 			MainMenuManager.testCompleted = true;
 			SceneManager.LoadScene ("SART_MainMenu");
 		} else {
+			showingTrial = false;
 			StartCoroutine (WaitForNextStimulus ());
 		}
 	}
@@ -65,7 +82,7 @@ public class SART_Test : MonoBehaviour {
 		
 		Reset ();
 		yield return new WaitForSeconds (waitTime);
-		StartCoroutine (ShowTrial (SelectTrial ()));
+		lastRoutine = StartCoroutine (ShowTrial (SelectTrial ()));
 	}
 
 	bool SelectTrial(){
@@ -89,12 +106,6 @@ public class SART_Test : MonoBehaviour {
 	
 		return trial;
 			
-	}
-
-	void CheckForInput(){
-		if(Input.GetKeyDown("space")){
-			print ("pressed");
-		}
 	}
 
 	void ShowGo(){
