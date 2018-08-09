@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class SART_Test : MonoBehaviour {
 
@@ -13,7 +14,6 @@ public class SART_Test : MonoBehaviour {
 
 
 	private bool allTrialsDone;
-
 	private int currentBlock;
 	private int currentTrial;
 
@@ -29,12 +29,6 @@ public class SART_Test : MonoBehaviour {
 		StartCoroutine(WaitForNextStimulus());
 	}
 
-	void Update(){
-		if(allTrialsDone){
-			Application.Quit ();
-		}
-	}
-
 	IEnumerator ShowTrial(bool trial){
 
 		if(trial == true){
@@ -44,37 +38,42 @@ public class SART_Test : MonoBehaviour {
 		}
 			
 		yield return new WaitForSeconds (waitTime);
-		StartCoroutine (WaitForNextStimulus ());
+
+		if(allTrialsDone){
+			SceneManager.LoadScene ("SART_MainMenu");
+		} else {
+			StartCoroutine (WaitForNextStimulus ());
+		}
 	}
 
 	IEnumerator WaitForNextStimulus(){
+		
 		Reset ();
 		yield return new WaitForSeconds (waitTime);
 		StartCoroutine (ShowTrial (SelectTrial ()));
 	}
 
 	bool SelectTrial(){
-
 		List<bool> block = blockGenerator.allBlocks [currentBlock];
 		bool trial = block [currentTrial];
 
 		print ("block: " + currentBlock + " trial: " + currentTrial);
 
-		if (currentTrial < block.Count && currentBlock < blockGenerator.allBlocks.Length){ //TODO possible error here
-			currentTrial++;
+		currentTrial++;
+
+		if(currentTrial == block.Count && currentBlock == blockGenerator.allBlocks.Length - 1){
+			print ("end of test");
+			allTrialsDone = true;
 		}
 
-		if (currentTrial >= block.Count && currentBlock < blockGenerator.allBlocks.Length) {
+		if(currentTrial == block.Count){
+			print ("end of block");
 			currentTrial = 0;
 			currentBlock++;
 		}
-
-		if(currentTrial >= block.Count && currentBlock >= blockGenerator.allBlocks.Length - 1){
-			allTrialsDone = true;
-			print ("done!");
-		}
-
+	
 		return trial;
+			
 	}
 
 	void CheckForInput(){
