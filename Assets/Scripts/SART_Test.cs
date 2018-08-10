@@ -28,9 +28,10 @@ public class SART_Test : MonoBehaviour {
 	private float testStartTime;
 	private float presentationTime;
 	private int blockToWrite;
-	private int trialToWrite;
+	private int trialNumberToWrite;
 	private float cummulativeActionTime;
 	private float lastActionTime;
+	private bool trialValueToWrite;
 
 
 	void Awake(){
@@ -48,45 +49,33 @@ public class SART_Test : MonoBehaviour {
 	void Start(){
 
 		Reset ();
-		testStartTime = Time.time;
 		lastRoutine = StartCoroutine(StartGame());
 	}
 
 	void Update(){
 
-		/*if(showingTrial == true){
-			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
-				lastButtonPressTime = Time.time;
-				HitButton.buttonPressed = false;
-				StopCoroutine (lastRoutine);
-				StartCoroutine (WaitForNextStimulus ());
-
-				if(allTrialsDone){
-					MainMenuManager.testCompleted = true;
-					SceneManager.LoadScene ("SART_MainMenu");
-				}
-
-			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial
-				print ("second push at: " + Time.time);
-				HitButton.buttonPressed = false;
-			}
-		}*/
-
 		if(showingTrial == true){
 			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
 				lastButtonPressTime = Time.time;
-				print ("first push at: " + lastButtonPressTime);
+
+				lastActionTime = (Time.time - testStartTime) - presentationTime;
+
+				cummulativeActionTime = lastActionTime + presentationTime;
+
+				csvMaker.Write (blockType, blockToWrite, trialNumberToWrite, trialValueToWrite, presentationTime * 1000, cummulativeActionTime * 1000, 0, true);
+
 				HitButton.buttonPressed = false;
 				StopCoroutine (lastRoutine);
 				StartCoroutine (WaitForNextStimulus ());
 
 				if(allTrialsDone){
 					MainMenuManager.testCompleted = true;
+					csvMaker.CreateCSVFile (csvMaker.path, csvMaker.dataCollected);
 					SceneManager.LoadScene ("SART_MainMenu");
 				}
 
 			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial
-				print ("second push at: " + Time.time);
+				
 				HitButton.buttonPressed = false;
 			}
 		}
@@ -99,13 +88,18 @@ public class SART_Test : MonoBehaviour {
 		}
 
 		counter.gameObject.SetActive (false);
+		testStartTime = Time.time;
 
 		StartCoroutine (WaitForNextStimulus ());
 	}
 
 	IEnumerator ShowTrial(bool trial){
 
+		trialValueToWrite = trial;
+
 		presentationTime = Time.time - testStartTime;
+
+		print ("trial presented at: " + presentationTime);
 
 		showingTrial = true;
 
@@ -117,7 +111,7 @@ public class SART_Test : MonoBehaviour {
 			
 		yield return new WaitForSeconds (waitTime);
 
-		csvMaker.Write (blockType, blockToWrite, trialToWrite, trial, presentationTime, 0, 0, false);
+		csvMaker.Write (blockType, blockToWrite, trialNumberToWrite, trialValueToWrite, presentationTime * 1000, 0, 0, false);
 
 		showingTrial = false;
 
@@ -143,7 +137,7 @@ public class SART_Test : MonoBehaviour {
 		bool trial = block [currentTrial];
 
 		blockToWrite = currentBlock;
-		trialToWrite = currentTrial;
+		trialNumberToWrite = currentTrial;
 
 		//print ("block: " + currentBlock + " trial: " + currentTrial);
 
