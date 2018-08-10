@@ -29,8 +29,8 @@ public class SART_Test : MonoBehaviour {
 	private float presentationTime;
 	private int blockToWrite;
 	private int trialNumberToWrite;
-	private float cummulativeActionTime;
-	private float lastActionTime;
+	private float firstHitTime;
+	private float firstHitReactionTime;
 	private bool trialValueToWrite;
 
 
@@ -40,10 +40,6 @@ public class SART_Test : MonoBehaviour {
 
 		currentBlock = 0;
 		currentTrial = 0;
-
-		lastActionTime = 0;
-		cummulativeActionTime = 0;
-
 	}
 
 	void Start(){
@@ -55,33 +51,41 @@ public class SART_Test : MonoBehaviour {
 	void Update(){
 
 		if(showingTrial == true){
-			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
+
+			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){ //When the player presses the button, we record the reaction time and write to CSV
+
 				lastButtonPressTime = Time.time;
 
-				lastActionTime = (Time.time - testStartTime) - presentationTime;
+				firstHitTime = (Time.time - testStartTime) - presentationTime;
 
-				cummulativeActionTime = lastActionTime + presentationTime;
+				firstHitReactionTime = firstHitTime + presentationTime;
 
-				csvMaker.Write (blockType, blockToWrite, trialNumberToWrite, trialValueToWrite, presentationTime * 1000, cummulativeActionTime * 1000, 0, true);
+				csvMaker.Write (blockType, blockToWrite, trialNumberToWrite, trialValueToWrite, presentationTime * 1000, firstHitReactionTime * 1000, 0, true);
 
 				HitButton.buttonPressed = false;
 				StopCoroutine (lastRoutine);
 				StartCoroutine (WaitForNextStimulus ());
 
-				if(allTrialsDone){
+				if(allTrialsDone){ //If this was the last trial, exit test, output CSV, and return to Main Menu
 					MainMenuManager.testCompleted = true;
 					csvMaker.CreateCSVFile (csvMaker.path, csvMaker.dataCollected);
 					SceneManager.LoadScene ("SART_MainMenu");
 				}
 
-			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial
-				
+			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial. Deletes last row of CSV and rewrites it with both the first and second reaction time.
+				csvMaker.dataCollected.RemoveAt(csvMaker.dataCollected.Count - 1);
+
+				float secondHitTime = (Time.time - testStartTime) - presentationTime;
+				float secondHitReactionTime = secondHitTime + presentationTime;
+
+				csvMaker.Write (blockType, blockToWrite, trialNumberToWrite, trialValueToWrite, presentationTime * 1000, firstHitReactionTime * 1000, secondHitReactionTime * 1000, true);
+
 				HitButton.buttonPressed = false;
 			}
 		}
 	}
 
-	IEnumerator StartGame(){
+	IEnumerator StartGame(){ //Shows timer and then starts test
 		for (int i = 3; i > 0; i--){
 			counter.text = i.ToString ();
 			yield return new WaitForSeconds (1);
@@ -93,13 +97,11 @@ public class SART_Test : MonoBehaviour {
 		StartCoroutine (WaitForNextStimulus ());
 	}
 
-	IEnumerator ShowTrial(bool trial){
+	IEnumerator ShowTrial(bool trial){//Shows trial based on next item of block. If the player doesn't answer then write a CSV line with 0 as reaction time.
 
 		trialValueToWrite = trial;
 
 		presentationTime = Time.time - testStartTime;
-
-		print ("trial presented at: " + presentationTime);
 
 		showingTrial = true;
 
@@ -125,31 +127,27 @@ public class SART_Test : MonoBehaviour {
 		}
 	}
 
-	IEnumerator WaitForNextStimulus(){
+	IEnumerator WaitForNextStimulus(){//Closes door and waits. After waiting shows next trial.
 		
 		Reset ();
 		yield return new WaitForSeconds (waitTime);
 		lastRoutine = StartCoroutine (ShowTrial (SelectTrial ()));
 	}
 
-	bool SelectTrial(){
+	bool SelectTrial(){//Selects the next trial based on what was determiend by the blockgenerator.
 		List<bool> block = blockGenerator.allBlocks [currentBlock];
 		bool trial = block [currentTrial];
 
 		blockToWrite = currentBlock;
 		trialNumberToWrite = currentTrial;
 
-		//print ("block: " + currentBlock + " trial: " + currentTrial);
-
 		currentTrial++;
 
 		if(currentTrial == block.Count && currentBlock == blockGenerator.allBlocks.Length - 1){
-			//print ("end of test");
 			allTrialsDone = true;
 		}
 
 		if(currentTrial == block.Count){
-			//print ("end of block");
 			currentTrial = 0;
 			currentBlock++;
 		}
@@ -158,6 +156,7 @@ public class SART_Test : MonoBehaviour {
 			
 	}
 
+	//These functions just choose which character to show or the door.
 	void ShowGo(){
 		door.SetActive (false);
 		noGo.SetActive (false);

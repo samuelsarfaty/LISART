@@ -19,12 +19,6 @@ public class BlockGenerator : MonoBehaviour {
 		for (int i = 0; i < maxBlocks; i++){
 			GenerateSingleBlock ();
 			allBlocks [i] = generatedBlock;
-
-
-			/*for (int j = 0; j < generatedBlock.Count; j++){ //Print all values of block, just to see if block generation works ok.
-				print (generatedBlock [j]);
-			}
-			print ("===============================");*/
 		}
 	}
 
@@ -53,7 +47,6 @@ public class BlockGenerator : MonoBehaviour {
 	IEnumerator CheckBlockValidity(List<bool> block){
 
 		if(block[0] == false || block[block.Count - 1] == false){ //Check if first or last trial is false.
-			//print ("false detected at start or end of block, recreating");
 			GenerateSingleBlock ();
 			yield break;
 		}
@@ -62,7 +55,6 @@ public class BlockGenerator : MonoBehaviour {
 			if (i == 0 || i == block.Count - 1) {	//skip first and last values of list
 				continue;
 			} else if (block [i] == false && (block [i + 1] == false)) { //Check if two nogos are together.
-				//print ("two falses together, recreating block");
 				GenerateSingleBlock ();
 				yield break;
 			}
