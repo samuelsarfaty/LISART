@@ -14,6 +14,8 @@ public class SART_Test : MonoBehaviour {
 	public float waitTime;
 
 	private BlockGenerator blockGenerator;
+	private CSV_Maker csvMaker;
+
 	private string blockType = "Test";
 	private bool allTrialsDone;
 	private int currentBlock;
@@ -22,26 +24,58 @@ public class SART_Test : MonoBehaviour {
 	private Coroutine lastRoutine;
 	private float lastButtonPressTime = 0;
 
+	//For writing CSV
+	private float testStartTime;
+	private float presentationTime;
+	private int blockToWrite;
+	private int trialToWrite;
+	private float cummulativeActionTime;
+	private float lastActionTime;
 
 
 	void Awake(){
 		blockGenerator = GameObject.FindObjectOfType<BlockGenerator> ();
+		csvMaker = GameObject.FindObjectOfType<CSV_Maker> ();
 
 		currentBlock = 0;
 		currentTrial = 0;
+
+		lastActionTime = 0;
+		cummulativeActionTime = 0;
+
 	}
 
 	void Start(){
 
 		Reset ();
+		testStartTime = Time.time;
 		lastRoutine = StartCoroutine(StartGame());
 	}
 
 	void Update(){
 
+		/*if(showingTrial == true){
+			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
+				lastButtonPressTime = Time.time;
+				HitButton.buttonPressed = false;
+				StopCoroutine (lastRoutine);
+				StartCoroutine (WaitForNextStimulus ());
+
+				if(allTrialsDone){
+					MainMenuManager.testCompleted = true;
+					SceneManager.LoadScene ("SART_MainMenu");
+				}
+
+			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial
+				print ("second push at: " + Time.time);
+				HitButton.buttonPressed = false;
+			}
+		}*/
+
 		if(showingTrial == true){
 			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
 				lastButtonPressTime = Time.time;
+				print ("first push at: " + lastButtonPressTime);
 				HitButton.buttonPressed = false;
 				StopCoroutine (lastRoutine);
 				StartCoroutine (WaitForNextStimulus ());
@@ -71,6 +105,8 @@ public class SART_Test : MonoBehaviour {
 
 	IEnumerator ShowTrial(bool trial){
 
+		presentationTime = Time.time - testStartTime;
+
 		showingTrial = true;
 
 		if(trial == true){
@@ -80,10 +116,14 @@ public class SART_Test : MonoBehaviour {
 		}
 			
 		yield return new WaitForSeconds (waitTime);
+
+		csvMaker.Write (blockType, blockToWrite, trialToWrite, trial, presentationTime, 0, 0, false);
+
 		showingTrial = false;
 
 		if(allTrialsDone){
 			MainMenuManager.testCompleted = true;
+			csvMaker.CreateCSVFile (csvMaker.path, csvMaker.dataCollected);
 			SceneManager.LoadScene ("SART_MainMenu");
 		} else {
 			
@@ -101,6 +141,9 @@ public class SART_Test : MonoBehaviour {
 	bool SelectTrial(){
 		List<bool> block = blockGenerator.allBlocks [currentBlock];
 		bool trial = block [currentTrial];
+
+		blockToWrite = currentBlock;
+		trialToWrite = currentTrial;
 
 		//print ("block: " + currentBlock + " trial: " + currentTrial);
 

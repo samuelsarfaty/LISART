@@ -8,8 +8,20 @@ using System.IO;
 public class CSV_Maker : MonoBehaviour {
 
 	private static CSV_Maker maker;
-	private List<string[]> dataCollected = new List<string[]> ();
-	private string path = "E:/Samuel/Goldsmiths/Research projects/Listen-In SART/Assets/Resources/SART_Data.csv"; //Choose path to output data
+
+	[HideInInspector]
+	public List<string[]> dataCollected = new List<string[]> ();
+	[HideInInspector]
+	public string path = "E:/Samuel/Goldsmiths/Research projects/Listen-In SART/Assets/Resources/SART_Data.csv"; //Choose path to output data
+
+	private bool created = false;
+
+	void Awake(){
+		if(!created){
+			DontDestroyOnLoad (this.gameObject);
+			created = true;
+		}
+	}
 
 	void Start(){
 		maker = this;
@@ -33,7 +45,7 @@ public class CSV_Maker : MonoBehaviour {
 		return rowData;
 	}
 
-	public static void Write(string type, int block, int trial, bool isGo, float presentationTime, float reactionTime, float reactionTime_2, bool hit){
+	public void Write(string type, int block, int trial, bool isGo, float presentationTime, float reactionTime, float reactionTime_2, bool hit){
 		string[] rowDataTemp = new string[8];
 
 		rowDataTemp [0] = type;
@@ -48,7 +60,7 @@ public class CSV_Maker : MonoBehaviour {
 		maker.dataCollected.Add (rowDataTemp);
 	}
 
-	public static void CreateCSVFile(string directory, List<string[]> data){
+	public void CreateCSVFile(string directory, List<string[]> data){
 		string[][] output = new string[data.Count][];
 
 		for (int i = 0; i < output.Length; i++){
@@ -69,9 +81,9 @@ public class CSV_Maker : MonoBehaviour {
 		outStream.Close ();
 	}
 
-	void OnApplicationQuit(){
+	/*void OnApplicationQuit(){
 		CreateCSVFile (path, dataCollected);
-	}
+	}*/
 
 
 }
