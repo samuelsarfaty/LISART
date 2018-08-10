@@ -10,15 +10,19 @@ public class SART_Test : MonoBehaviour {
 	public GameObject go;
 	public GameObject noGo;
 	public Text counter;
+
 	public float waitTime;
 
 	private BlockGenerator blockGenerator;
+	private string blockType = "Test";
 	private bool allTrialsDone;
 	private int currentBlock;
 	private int currentTrial;
 	private bool showingTrial = false;
 	private Coroutine lastRoutine;
-	private float lastPressTime = 0;
+	private float lastButtonPressTime = 0;
+
+
 
 	void Awake(){
 		blockGenerator = GameObject.FindObjectOfType<BlockGenerator> ();
@@ -36,8 +40,8 @@ public class SART_Test : MonoBehaviour {
 	void Update(){
 
 		if(showingTrial == true){
-			if(HitButton.buttonPressed == true && (Time.time - lastPressTime > 0.3f)){
-				lastPressTime = Time.time;
+			if(HitButton.buttonPressed == true && (Time.time - lastButtonPressTime > 0.3f)){
+				lastButtonPressTime = Time.time;
 				HitButton.buttonPressed = false;
 				StopCoroutine (lastRoutine);
 				StartCoroutine (WaitForNextStimulus ());
@@ -46,8 +50,11 @@ public class SART_Test : MonoBehaviour {
 					MainMenuManager.testCompleted = true;
 					SceneManager.LoadScene ("SART_MainMenu");
 				}
-			}
 
+			} else if (HitButton.buttonPressed == true && (Time.time - lastButtonPressTime < 0.3f)){ //Check for second press within same trial
+				print ("second push at: " + Time.time);
+				HitButton.buttonPressed = false;
+			}
 		}
 	}
 

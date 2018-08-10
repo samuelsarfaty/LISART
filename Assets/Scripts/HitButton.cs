@@ -7,11 +7,9 @@ public class HitButton : MonoBehaviour {
 
 	public void Press(){
 		buttonPressed = true;
-		//print ("button pressed =" + buttonPressed);
 	}
 
 	public void Release(){
 		buttonPressed = false;
-		//print ("button pressed =" + buttonPressed);
 	}
 }

@@ -1,2 +1,2 @@
-TrialNumber,BlockNumber,Type,isGo?,PresentationTime,ReactionTime,Hit
+BlockType,BlockNumber,TrialNumber,isGo?,PresentationTime,ReactionTime,ReactionTime2,Hit
 
