@@ -18,6 +18,7 @@ public class SART_Test : MonoBehaviour {
 	private int currentTrial;
 	private bool showingTrial = false;
 	private Coroutine lastRoutine;
+	private float lastPressTime = 0;
 
 	void Awake(){
 		blockGenerator = GameObject.FindObjectOfType<BlockGenerator> ();
@@ -33,17 +34,10 @@ public class SART_Test : MonoBehaviour {
 	}
 
 	void Update(){
-		/*if(showingTrial == true && Input.GetKeyDown("space")){
-			StopCoroutine (lastRoutine);
-			StartCoroutine (WaitForNextStimulus ());
-			if(allTrialsDone){
-				MainMenuManager.testCompleted = true;
-				SceneManager.LoadScene ("SART_MainMenu");
-			}
-		}*/
 
 		if(showingTrial == true){
-			if(HitButton.buttonPressed == true){
+			if(HitButton.buttonPressed == true && (Time.time - lastPressTime > 0.3f)){
+				lastPressTime = Time.time;
 				HitButton.buttonPressed = false;
 				StopCoroutine (lastRoutine);
 				StartCoroutine (WaitForNextStimulus ());
@@ -79,12 +73,13 @@ public class SART_Test : MonoBehaviour {
 		}
 			
 		yield return new WaitForSeconds (waitTime);
+		showingTrial = false;
 
 		if(allTrialsDone){
 			MainMenuManager.testCompleted = true;
 			SceneManager.LoadScene ("SART_MainMenu");
 		} else {
-			showingTrial = false;
+			
 			StartCoroutine (WaitForNextStimulus ());
 		}
 	}
@@ -100,17 +95,17 @@ public class SART_Test : MonoBehaviour {
 		List<bool> block = blockGenerator.allBlocks [currentBlock];
 		bool trial = block [currentTrial];
 
-		print ("block: " + currentBlock + " trial: " + currentTrial);
+		//print ("block: " + currentBlock + " trial: " + currentTrial);
 
 		currentTrial++;
 
 		if(currentTrial == block.Count && currentBlock == blockGenerator.allBlocks.Length - 1){
-			print ("end of test");
+			//print ("end of test");
 			allTrialsDone = true;
 		}
 
 		if(currentTrial == block.Count){
-			print ("end of block");
+			//print ("end of block");
 			currentTrial = 0;
 			currentBlock++;
 		}
